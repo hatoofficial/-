@@ -2,32 +2,40 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>Snake Game</title>
+  <title>Google風スネークゲーム</title>
   <style>
     body {
       margin: 0;
-      background: #111;
+      background: #fafafa;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      color: white;
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
     }
-    canvas {
-      background: #000;
-      box-shadow: 0 0 20px lime;
+
+    .container {
+      text-align: center;
     }
+
     #score {
-      position: absolute;
-      top: 20px;
       font-size: 20px;
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    canvas {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <div id="score">Score: 0</div>
-  <canvas id="game" width="400" height="400"></canvas>
+  <div class="container">
+    <div id="score">Score: 0</div>
+    <canvas id="game" width="400" height="400"></canvas>
+  </div>
 
   <script>
     const canvas = document.getElementById('game');
@@ -56,6 +64,17 @@
       return Math.floor(Math.random() * (max - min)) + min;
     }
 
+    function drawGrid() {
+      ctx.fillStyle = '#eee';
+      for (let x = 0; x < canvas.width; x += grid) {
+        for (let y = 0; y < canvas.height; y += grid) {
+          ctx.beginPath();
+          ctx.arc(x + grid/2, y + grid/2, 1, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
     function loop() {
       requestAnimationFrame(loop);
 
@@ -64,10 +83,11 @@
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      drawGrid();
+
       snake.x += snake.dx;
       snake.y += snake.dy;
 
-      // 壁でループ
       if (snake.x < 0) snake.x = canvas.width - grid;
       else if (snake.x >= canvas.width) snake.x = 0;
 
@@ -80,16 +100,20 @@
         snake.cells.pop();
       }
 
-      // りんご描画
-      ctx.fillStyle = 'red';
-      ctx.fillRect(apple.x, apple.y, grid - 1, grid - 1);
+      // りんご（Googleっぽい赤）
+      ctx.fillStyle = '#ea4335';
+      ctx.beginPath();
+      ctx.arc(apple.x + grid/2, apple.y + grid/2, grid/2 - 2, 0, Math.PI * 2);
+      ctx.fill();
 
-      // 蛇描画
-      ctx.fillStyle = 'lime';
+      // 蛇（丸くてGoogleっぽい緑）
       snake.cells.forEach(function(cell, index) {
-        ctx.fillRect(cell.x, cell.y, grid - 1, grid - 1);
+        ctx.fillStyle = '#34a853';
+        ctx.beginPath();
+        ctx.arc(cell.x + grid/2, cell.y + grid/2, grid/2 - 2, 0, Math.PI * 2);
+        ctx.fill();
 
-        // りんご食べた
+        // 食べる
         if (cell.x === apple.x && cell.y === apple.y) {
           snake.maxCells++;
           score++;
@@ -115,24 +139,7 @@
       });
     }
 
-    document.addEventListener('keydown', function(e) {
-      if (e.which === 37 && snake.dx === 0) {
-        snake.dx = -grid;
-        snake.dy = 0;
-      } else if (e.which === 38 && snake.dy === 0) {
-        snake.dy = -grid;
-        snake.dx = 0;
-      } else if (e.which === 39 && snake.dx === 0) {
-        snake.dx = grid;
-        snake.dy = 0;
-      } else if (e.which === 40 && snake.dy === 0) {
-        snake.dy = grid;
-        snake.dx = 0;
-      }
-    });
+    document.addEventListener('keydown', f
 
-    requestAnimationFrame(loop);
-  </script>
-</body>
-</html>
 
+ 
